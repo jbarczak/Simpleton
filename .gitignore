@@ -1,0 +1,15 @@
+*.exe
+*.ilk
+*.pdb
+*.cso
+*.cso
+*.sdf
+*.suo
+*.user
+*.log
+*.tlog
+*.obj
+*.idb
+*.lib
+Test/Debug/BuildLog.htm
+Test/Debug/mt.dep
