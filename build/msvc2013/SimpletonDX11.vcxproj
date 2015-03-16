@@ -162,7 +162,7 @@
     <ClInclude Include="..\..\include\DX11\SimpletonDX11.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\DX11BufferPool.cpp" />
+    <ClCompile Include="..\..\src\DX11\DX11BufferPool.cpp" />
     <ClCompile Include="..\..\src\DX11\DX11Mesh.cpp" />
     <ClCompile Include="..\..\src\DX11\DX11PipelineResourceSchema.cpp" />
     <ClCompile Include="..\..\src\DX11\DX11PipelineResourceSet.cpp" />

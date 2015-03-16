@@ -71,7 +71,7 @@
     <ClCompile Include="..\..\src\DX11\DX11Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\DX11BufferPool.cpp">
+    <ClCompile Include="..\..\src\DX11\DX11BufferPool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
