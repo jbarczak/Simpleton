@@ -332,6 +332,16 @@ namespace Simpleton
                       pM[1]*P.x + pM[5]*P.y + pM[9]*P.z + pM[13],
                       pM[2]*P.x + pM[6]*P.y + pM[10]*P.z + pM[14] );
     }
+    
+    Vec3f TransformPoint( const Matrix4f& rM, const Vec3f& P )
+    {
+        const float* pM = rM.GetColumnMajor();
+        Vec3f v = Vec3f( pM[0]*P.x + pM[4]*P.y + pM[8]*P.z + pM[12],
+                      pM[1]*P.x + pM[5]*P.y + pM[9]*P.z + pM[13],
+                      pM[2]*P.x + pM[6]*P.y + pM[10]*P.z + pM[14] );
+        float w = pM[3]*P.x + pM[7]*P.y + pM[11]*P.z + pM[15];
+        return v*(1.0f/w);
+    }
 
     Vec3f AffineTransformDirection( const Matrix4f& rM, const Vec3f& P )
     {

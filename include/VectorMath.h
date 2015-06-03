@@ -518,11 +518,45 @@ namespace Simpleton
     {
         float fCosTheta = sqrtf( s ); 
         float fSinTheta = sqrtf( 1.0f - s );
-        float phi = (t*PI_f) - (PI_f);
+        float phi = (t*TWOPI_F) - (PI_f);
         float y = fCosTheta;
         float x = cos(phi)*fSinTheta;
         float z = sin(phi)*fSinTheta;
         return Vec3f(x,y,z);        
+    }
+
+    //=====================================================================================================================
+    /// Computes a uniform location on the sphere from a pair of random numbers
+    /// \param s The polar coordinate, a random value between 0 and 1.  Value is 0.5 at the equator
+    /// \param t The azimuthal coordinate, a random value between 0 and 1
+    //=====================================================================================================================
+    inline Vec3f UniformSampleSphere( float s, float t )
+    {
+        float fCosTheta = 1.0f - 2.0f*s;
+        float fSinTheta = 2.0f * sqrtf( s*(s-1) );
+        float phi = t*TWOPI_F - PI_f;
+        float y = fCosTheta;
+        float x = cos(phi)*fSinTheta;
+        float z = sin(phi)*fSinTheta;
+        return Vec3f(x,y,z);  
+    }
+
+    //=====================================================================================================================
+    /// \ingroup TinyRT
+    /// Computes a cosine-weighted direction on the hemisphere from a pair of random numbers
+    /// \param s The polar coordinate, a random value between 0 and 1.  Value is 1 at the pole
+    /// \param t The azimuthal coordinate, a random value between 0 and 1
+    /// \return  The direction is expressed in tangent space, where Y is up
+    //=====================================================================================================================
+    inline Vec3f UniformSampleHemisphere( float s, float t )
+    {
+        float fCosTheta = s;
+        float fSinTheta = sqrtf( 1.0f - s*s );
+        float phi = t*TWOPI_F - PI_f;
+        float y = fCosTheta;
+        float x = cos(phi)*fSinTheta;
+        float z = sin(phi)*fSinTheta;
+        return Vec3f(x,y,z);  
     }
 
     //=====================================================================================================================
