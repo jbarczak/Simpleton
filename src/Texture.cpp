@@ -148,11 +148,49 @@ namespace Simpleton
         uint nPix = nWidth*nHeight;
         for( uint i=0; i<nPix; i++ )
         {
-            float t= Rand(-3.1415926,3.1415926);
+            float t= Rand(-3.1415926f,3.1415926f);
             float cosT = cos(t);
             float sinT = sin(t);
-            pOut[2*i]   = cosT*127;
-            pOut[2*i+1] = sinT*127;
+            pOut[2*i]   = (int8)(cosT*127);
+            pOut[2*i+1] = (int8)(sinT*127);
+        }
+    }
+
+
+    void Sobel3x3( float* pGradOut, const float* pHeightIn, float fScaleFactor, size_t width, size_t height )
+    {
+        for( size_t y=0; y<height; y++ )
+        {
+            size_t y0 = (y-1) % height;
+            size_t y1 = y;
+            size_t y2 = (y+1) % height;
+
+            const float* h0 = pHeightIn + y0*width;
+            const float* h1 = pHeightIn + y1*width;
+            const float* h2 = pHeightIn + y2*width;
+
+            for( size_t x=0; x<width; x++ )
+            {
+                size_t x0 = (x-1) % width;
+                size_t x1 = x;
+                size_t x2 = (x+1) % width;
+                
+                // 1 0 -1
+                // 2 0 -2
+                // 1 0 -1
+                float dx = (h0[x0] + 2*h1[x0] + h2[x0]) -
+                           (h0[x2] + 2*h1[x2] + h2[x2]);
+
+                // 1 2 1
+                // 0 0 0
+                // -1 -2 -1
+                float dy = (h0[x0]+2*h0[x1]+h0[x2]) -
+                           (h2[x0]+2*h2[x1]+h2[x2]);
+          
+                size_t pix = 2*(y*width+x);
+                pGradOut[pix+0] = fScaleFactor*dx*(1.0f/8.0f);
+                pGradOut[pix+1] = fScaleFactor*dy*(1.0f/8.0f);
+            }
         }
     }
 }

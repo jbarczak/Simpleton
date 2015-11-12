@@ -31,6 +31,9 @@ namespace Simpleton
 
     /// Generate a random rotation texture.  Output is a two channel 8-bit SNORM map containing cos(t),sin(t) in each pixel
     void CreateRandomRotations( int8* pOut, uint nWidth, uint nHeight );
+
+
+    void Sobel3x3( float* pGradOut, const float* pHeightIn, float fScaleFactor, size_t width, size_t height );
 }
 
 #endif
