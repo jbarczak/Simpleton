@@ -204,6 +204,10 @@ namespace Simpleton
     /// Transforms a point (w=1) by a matrix, multiplying from the right
     Vec3f AffineTransformPoint( const Matrix4f& rM, const Vec3f& P );
     
+    /// Transforms a point (w=1) by a matrix, multiplying from the right
+    Vec3f TransformPoint( const Matrix4f& rM, const Vec3f& P );
+    
+
     /// Transforms a direction (w=0) by a matrix, multiplying from the right
     Vec3f AffineTransformDirection( const Matrix4f& rM, const Vec3f& P );
 
