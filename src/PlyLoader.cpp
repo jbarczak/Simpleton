@@ -195,6 +195,29 @@ static int FaceColorCallback( p_ply_argument  argument )
 }
 
 
+static int VertexColorCallback( p_ply_argument  argument )
+{
+    // figure out which component this is
+    long nColorComponent;
+    ply_get_argument_user_data( argument, 0, &nColorComponent );
+
+    // figure out the face index
+    long nIndex;
+    ply_get_argument_element( argument, NULL, &nIndex );
+    
+    // get the value
+    double value = ply_get_argument_value( argument );
+    UINT nValue = (UINT) value;
+
+    Context* pContext = GetPlyContext(argument);
+
+    UINT nMask = 0xff << 8*( nColorComponent+1 );
+    pContext->pMesh->pVertexColors[ nIndex ].Channels[nColorComponent] = static_cast<uint8>(nValue);
+
+    return 1;
+}
+
+
 // convert the mesh vertices into the form that Josh likes
 static void PostProcessPositions( Simpleton::PlyMesh* pMesh )
 {    
@@ -274,6 +297,7 @@ namespace Simpleton
         UINT nNormals=0;
         UINT nUVs=0;
         UINT nFaceColors=0;
+        UINT nVertexColors=0;
 
         if( !(Flags & PF_IGNORE_NORMALS) )
         {
@@ -287,6 +311,10 @@ namespace Simpleton
             nFaceColors = ply_set_read_cb( ply, "face", "red",   FaceColorCallback, &ctx, 0 ) && 
                            ply_set_read_cb( ply, "face", "green", FaceColorCallback, &ctx, 1 ) && 
                            ply_set_read_cb( ply, "face", "blue",  FaceColorCallback, &ctx, 2 );
+
+            nVertexColors = ply_set_read_cb( ply, "vertex", "red",   VertexColorCallback, &ctx, 0 ) && 
+                            ply_set_read_cb( ply, "vertex", "green", VertexColorCallback, &ctx, 1 ) && 
+                            ply_set_read_cb( ply, "vertex", "blue",  VertexColorCallback, &ctx, 2 );
         }
 
         if( !(Flags & PF_IGNORE_UVS) )
@@ -294,7 +322,9 @@ namespace Simpleton
             nUVs =  (ply_set_read_cb( ply, "vertex", "s", &VertexUVCallback, &ctx, 0) &&
                      ply_set_read_cb( ply, "vertex", "t", &VertexUVCallback, &ctx, 1)) ||
                     (ply_set_read_cb( ply, "vertex", "u", &VertexUVCallback, &ctx, 0) &&
-                     ply_set_read_cb( ply, "vertex", "v", &VertexUVCallback, &ctx, 1));
+                     ply_set_read_cb( ply, "vertex", "v", &VertexUVCallback, &ctx, 1)) ||
+                    (ply_set_read_cb( ply, "vertex", "texture_u", &VertexUVCallback, &ctx, 0) &&
+                     ply_set_read_cb( ply, "vertex", "texture_v", &VertexUVCallback, &ctx, 1));
         }
     
         // allocate arrays based on vertex counts and components which are present
@@ -317,6 +347,13 @@ namespace Simpleton
             ctx.pMesh->pFaceColors = new PlyMesh::Color[nFaceColors];        // there are per-face colors.  Allocate space for them
             memset( ctx.pMesh->pFaceColors,0xff,sizeof(PlyMesh::Color)*nFaceColors );
         }
+
+        if( nVertexColors )
+        {
+            ctx.pMesh->pVertexColors = new PlyMesh::Color[nVertices];        // there are per-face colors.  Allocate space for them
+            memset( ctx.pMesh->pVertexColors,0xff,sizeof(PlyMesh::Color)*nVertices );
+        }
+
     
 
         // we'll support triangle lists, or a single large strip with cuts, but not both of them...
@@ -379,6 +416,99 @@ namespace Simpleton
         }
   
         return ok;
+    }
+
+
+    bool WritePly( const char* pWhere, PlyMesh& mesh )
+    {
+        p_ply ply = ply_create(pWhere,PLY_LITTLE_ENDIAN, NULL);
+    
+        if (!ply) 
+            return false;
+
+
+        ply_add_element( ply, "vertex", mesh.nVertices );
+        ply_add_scalar_property( ply, "x", PLY_FLOAT32 );
+        ply_add_scalar_property( ply, "y", PLY_FLOAT32 );
+        ply_add_scalar_property( ply, "z", PLY_FLOAT32 );
+        if( mesh.pNormals )
+        {
+            ply_add_scalar_property( ply, "nx", PLY_FLOAT32 );
+            ply_add_scalar_property( ply, "ny", PLY_FLOAT32 );
+            ply_add_scalar_property( ply, "nz", PLY_FLOAT32 );
+        }
+        if( mesh.pUVs )
+        {
+            ply_add_scalar_property( ply, "u", PLY_FLOAT32 );
+            ply_add_scalar_property( ply, "v", PLY_FLOAT32 );
+        }
+        if( mesh.pVertexColors )
+        {
+            ply_add_scalar_property( ply, "red",   PLY_UCHAR );
+            ply_add_scalar_property( ply, "green", PLY_UCHAR );
+            ply_add_scalar_property( ply, "blue",  PLY_UCHAR );
+            ply_add_scalar_property( ply, "alpha", PLY_UCHAR );
+        }
+        
+        ply_add_element( ply, "face", mesh.nTriangles );
+ 
+        ply_add_list_property( ply, "vertex_indices", PLY_UCHAR, PLY_UIN32 );
+ 
+
+        if( mesh.pFaceColors )
+        {
+            ply_add_scalar_property( ply, "red", PLY_UCHAR );
+            ply_add_scalar_property( ply, "green", PLY_UCHAR );
+            ply_add_scalar_property( ply, "blue", PLY_UCHAR );
+            ply_add_scalar_property( ply, "alpha", PLY_UCHAR );
+        }
+
+        if (!ply_write_header(ply)) 
+            return false;
+
+        for( size_t v=0; v<mesh.nVertices; v++ )
+        {
+            ply_write( ply, mesh.pPositions[v][0] );
+            ply_write( ply, mesh.pPositions[v][1] );
+            ply_write( ply, mesh.pPositions[v][2] );
+            if( mesh.pNormals )
+            {
+                ply_write( ply, mesh.pNormals[v][0] );
+                ply_write( ply, mesh.pNormals[v][1] );
+                ply_write( ply, mesh.pNormals[v][2] );
+            }
+            if( mesh.pUVs )
+            {
+                ply_write( ply, mesh.pUVs[v][0] );
+                ply_write( ply, mesh.pUVs[v][1] );
+            }
+            if( mesh.pVertexColors )
+            {
+                ply_write( ply, mesh.pVertexColors[v].r );
+                ply_write( ply, mesh.pVertexColors[v].g );
+                ply_write( ply, mesh.pVertexColors[v].b );
+                ply_write( ply, mesh.pVertexColors[v].a );
+            }
+        }
+        
+        for( size_t t=0; t<mesh.nTriangles; t++ )
+        {
+            ply_write(ply,3);
+            ply_write(ply,mesh.pVertexIndices[3*t+0] );
+            ply_write(ply,mesh.pVertexIndices[3*t+1] );
+            ply_write(ply,mesh.pVertexIndices[3*t+2] );
+
+            if( mesh.pFaceColors )
+            {
+                ply_write( ply, mesh.pFaceColors[t].r );
+                ply_write( ply, mesh.pFaceColors[t].g );
+                ply_write( ply, mesh.pFaceColors[t].b );
+                ply_write( ply, mesh.pFaceColors[t].a );
+            }
+        }
+
+        ply_close(ply);
+        return true;
     }
 
 

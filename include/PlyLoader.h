@@ -48,6 +48,13 @@ namespace Simpleton
             uint8 Channels[4];
         } ;
 
+        PlyMesh()
+            : nVertices(0), pPositions(0), pNormals(0), pUVs(0), pVertexColors(0), nTriangles(0),
+              pVertexIndices(0), pFaceColors(0)
+        {
+            
+        }
+
 
         Float3 bbMin;
         Float3 bbMax;
@@ -56,6 +63,7 @@ namespace Simpleton
         Float3* pPositions;
         Float3* pNormals;
         Float2* pUVs;
+        Color*  pVertexColors;
 
         uint nTriangles;
         uint32* pVertexIndices;
@@ -64,6 +72,7 @@ namespace Simpleton
 
     bool LoadPly( const char* pFileName, PlyMesh& rMesh, unsigned int Flags );
 
+    bool WritePly( const char* pFileName, PlyMesh& rMesh );
    
     void FreePly( PlyMesh& rMesh );
 }
