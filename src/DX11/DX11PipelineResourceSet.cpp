@@ -18,74 +18,24 @@
 
 namespace Simpleton
 {
-
-    
+   
     //=====================================================================================================================
     //
-    //         Constructors/Destructors
+    //         Pipeline Resource Set
     //
     //=====================================================================================================================
     
-    DX11PipelineResourceSet::DX11PipelineResourceSet() : m_pSchema(0)
+    DX11PipelineResourceSet::DX11PipelineResourceSet() 
     {
     }
     DX11PipelineResourceSet::~DX11PipelineResourceSet()
     {
-        if( m_pSchema )
-            m_pSchema->DestroyResourceSet(this);
+        if( GetSchema() )
+            GetSchema()->DestroyResourceSet(this);
         m_pSchema=0;
     }
-
-    //=====================================================================================================================
-    //
-    //            Public Methods
-    //
-    //=====================================================================================================================
     
-    //=====================================================================================================================
-    //=====================================================================================================================
-    void DX11PipelineResourceSet::BeginUpdate(ID3D11DeviceContext* pCtx )
-    {
-        // TODO: Eventually set state to optimize CB updates here.
-    }
-
-  
-    void DX11PipelineResourceSet::BindSRV( uint nName, ID3D11ShaderResourceView* pSRV )
-    {
-        m_pSRVsByName[nName] = pSRV;
-    }
-    void DX11PipelineResourceSet::BindSampler( uint nName, ID3D11SamplerState* pSampler )
-    {
-        m_pSamplersByName[nName] = pSampler;
-    }
-    void DX11PipelineResourceSet::BindConstant( uint nName, const void* pBytes, uint nBytes )
-    {
-        byte* pLocation = m_pConstantStaging + m_pConstantsByName[nName].nStageOffset;
-        nBytes = MIN(nBytes,m_pConstantsByName[nName].nStageSize );
-        memcpy( pLocation, pBytes, nBytes );
-    }
-    void DX11PipelineResourceSet::EndUpdate( ID3D11DeviceContext* pCtx )
-    {
-        byte* pMappedBuffers[256];
-        for( uint i=0; i<m_nUniqueCBs; i++ )
-        {
-            D3D11_MAPPED_SUBRESOURCE mapped;
-            pCtx->Map( m_pConstantBuffers[i], 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped );
-            pMappedBuffers[i] = reinterpret_cast<uint8*>( mapped.pData );
-        }
-
-        for( uint m=0; m<m_nCBMovements; m++ )
-        {
-            const byte* pSrc = m_pConstantStaging + m_pCBMovements[m].nStageOffset;
-            byte* pDst = pMappedBuffers[ m_pCBMovements[m].nBufferIndex ] + m_pCBMovements[m].nBufferOffset;
-            memcpy( pDst, pSrc, m_pCBMovements[m].nSize );
-        }
-
-        for( uint i=0; i<m_nUniqueCBs; i++ )
-            pCtx->Unmap( m_pConstantBuffers[i], 0 );
-    }
-
-
+   
     //=====================================================================================================================
     //=====================================================================================================================
     void DX11PipelineResourceSet::Apply( ID3D11DeviceContext* pContext )
@@ -127,14 +77,9 @@ namespace Simpleton
 
     //=====================================================================================================================
     //
-    //           Protected Methods
+    //           Compute Resource Set
     //
     //=====================================================================================================================
     
-    //=====================================================================================================================
-    //
-    //            Private Methods
-    //
-    //=====================================================================================================================
 }
 
