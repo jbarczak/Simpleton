@@ -36,5 +36,7 @@
 
 #include "PoolAllocator.h"
 
+#include "Texture.h"
+
 
 #endif
