@@ -157,6 +157,8 @@
     <ClInclude Include="..\..\include\DX11\DX11PipelineResourceSet.h" />
     <ClInclude Include="..\..\include\DX11\DX11PipelineState.h" />
     <ClInclude Include="..\..\include\DX11\DX11PipelineStateBuilder.h" />
+    <ClInclude Include="..\..\include\DX11\DX11ResourceSchema.h" />
+    <ClInclude Include="..\..\include\DX11\DX11ResourceSet.h" />
     <ClInclude Include="..\..\include\DX11\DX11Sampler.h" />
     <ClInclude Include="..\..\include\DX11\DX11Texture.h" />
     <ClInclude Include="..\..\include\DX11\DX11Window.h" />
@@ -169,6 +171,8 @@
     <ClCompile Include="..\..\src\DX11\DX11PipelineResourceSet.cpp" />
     <ClCompile Include="..\..\src\DX11\DX11PipelineState.cpp" />
     <ClCompile Include="..\..\src\DX11\DX11PipelineStateBuilder.cpp" />
+    <ClCompile Include="..\..\src\DX11\DX11ResourceSchema.cpp" />
+    <ClCompile Include="..\..\src\DX11\DX11ResourceSet.cpp" />
     <ClCompile Include="..\..\src\DX11\DX11Sampler.cpp" />
     <ClCompile Include="..\..\src\DX11\DX11Texture.cpp" />
     <ClCompile Include="..\..\src\DX11\DX11Window.cpp" />
