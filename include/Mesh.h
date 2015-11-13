@@ -119,7 +119,7 @@ namespace Simpleton
     }
 
 
-    void ExpandTriangleStrip( uint* pList, const uint* pStrip, uint nTriangles )
+    inline void ExpandTriangleStrip( uint* pList, const uint* pStrip, uint nTriangles )
     {
         pList[0] = pStrip[0];
         pList[1] = pStrip[1];
