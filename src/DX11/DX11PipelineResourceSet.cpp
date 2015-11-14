@@ -30,9 +30,6 @@ namespace Simpleton
     }
     DX11PipelineResourceSet::~DX11PipelineResourceSet()
     {
-        if( GetSchema() )
-            GetSchema()->DestroyResourceSet(this);
-        m_pSchema=0;
     }
     
    

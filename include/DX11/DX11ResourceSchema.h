@@ -45,6 +45,7 @@ namespace Simpleton
         DX11ResourceSchema() {};
         virtual ~DX11ResourceSchema() {};
 
+        void DestroyResourceSet( DX11ResourceSet* pSet ) const;
 
         static size_t CountSamplers( ID3D11ShaderReflection* pReflection );
         static size_t CountTextures( ID3D11ShaderReflection* pReflection );

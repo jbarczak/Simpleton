@@ -22,6 +22,7 @@
 namespace Simpleton
 {
     class DX11PipelineState;
+    class DX11ComputeState;
     class DX11PipelineResourceSchema;
 
     class DX11PipelineStateBuilder
@@ -45,6 +46,7 @@ namespace Simpleton
 
         void EndState( DX11PipelineState* pState );
 
+        
         void Destroy();
 
     private:

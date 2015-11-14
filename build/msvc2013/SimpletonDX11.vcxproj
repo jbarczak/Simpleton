@@ -152,6 +152,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\DX11\DX11BufferPool.h" />
+    <ClInclude Include="..\..\include\DX11\DX11ComputeKernel.h" />
+    <ClInclude Include="..\..\include\DX11\DX11ComputeResourceSchema.h" />
+    <ClInclude Include="..\..\include\DX11\DX11ComputeResourceSet.h" />
     <ClInclude Include="..\..\include\DX11\DX11Mesh.h" />
     <ClInclude Include="..\..\include\DX11\DX11PipelineResourceSchema.h" />
     <ClInclude Include="..\..\include\DX11\DX11PipelineResourceSet.h" />
@@ -166,6 +169,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\DX11\DX11BufferPool.cpp" />
+    <ClCompile Include="..\..\src\DX11\DX11ComputeKernel.cpp" />
+    <ClCompile Include="..\..\src\DX11\DX11ComputeResourceSchema.cpp" />
+    <ClCompile Include="..\..\src\DX11\DX11ComputeResourceSet.cpp" />
     <ClCompile Include="..\..\src\DX11\DX11Mesh.cpp" />
     <ClCompile Include="..\..\src\DX11\DX11PipelineResourceSchema.cpp" />
     <ClCompile Include="..\..\src\DX11\DX11PipelineResourceSet.cpp" />

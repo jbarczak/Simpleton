@@ -48,8 +48,7 @@ namespace Simpleton
         
     private:
    
-        virtual void DestroyResourceSet( DX11PipelineResourceSet* pSet ) const;
-
+        
         friend class DX11PipelineResourceSet;
 
         DX11PipelineResourceSchema() {};

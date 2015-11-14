@@ -4,6 +4,11 @@
 
 #include "DX11/DX11ResourceSchema.h"
 
+struct ID3D11DeviceContext;
+struct ID3D11ShaderResourceView;
+struct ID3D11SamplerState;
+struct ID3D11Buffer;
+
 namespace Simpleton
 {
 
@@ -34,6 +39,8 @@ namespace Simpleton
         const DX11ResourceSchema* m_pSchema;
        
         uint8 m_nUniqueCBs;
+        uint8 m_nUniqueTextures;
+        uint8 m_nUniqueSamplers;
         uint m_nCBMovements;
         
            

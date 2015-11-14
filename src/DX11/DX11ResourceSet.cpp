@@ -29,6 +29,7 @@ namespace Simpleton
     }
     DX11ResourceSet::~DX11ResourceSet()
     {
+        m_pSchema->DestroyResourceSet(this);
     }
     
     //=====================================================================================================================

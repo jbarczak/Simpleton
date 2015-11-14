@@ -488,6 +488,9 @@ namespace Simpleton
     //=====================================================================================================================    
     void DX11ResourceSchema::CreateResourceSet( DX11ResourceSet* pSet, ID3D11Device* pDevice ) const
     {
+        if( pSet->m_pSchema )
+            DestroyResourceSet(pSet);
+
         uint nSamplerPtrs = (m_SamplerNames.size()+1);
         uint nSRVPtrs = (m_SRVNames.size()+1); // add one for 'not-found'
         uint nCBPtrs = m_CBSizes.size();
@@ -521,10 +524,21 @@ namespace Simpleton
 
         pSet->m_nCBMovements     = m_CBMovements.size();
         pSet->m_nUniqueCBs       = m_CBSizes.size();
+        pSet->m_nUniqueSamplers  = nSamplerPtrs;
+        pSet->m_nUniqueTextures  = nSRVPtrs;
         pSet->m_pConstantsByName = m_StagingLayout.data();
         pSet->m_pCBMovements     = m_CBMovements.data();
         pSet->m_pBindIndices     = m_BindIndices.data();
         pSet->m_pSchema = this;
+    }
+
+    //=====================================================================================================================    
+    void DX11ResourceSchema::DestroyResourceSet( DX11ResourceSet* pSet ) const
+    {
+        for( uint i=0; i<pSet->m_nUniqueCBs; i++ )
+            pSet->m_pConstantBuffers[i]->Release();
+        free(pSet->m_pSamplersByName);
+        pSet->m_pSchema = 0;
     }
 
 }
