@@ -52,13 +52,9 @@ namespace Simpleton
     {
     public:
 
-        enum Flags
-        {
-            HIGH_PRECISION,
-            WITH_MIPS
-        };
+       
 
-        bool Init( uint nWidth, uint nHeight, uint nMips, ID3D11Device* pDevice );
+        bool Init( uint nWidth, uint nHeight, uint nMips, bool bD32, ID3D11Device* pDevice );
 
         ID3D11ShaderResourceView* GetSRV() { return m_pSRV; };
         ID3D11DepthStencilView* GetDSV() { return m_pDSV; };

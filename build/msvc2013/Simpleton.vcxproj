@@ -58,6 +58,7 @@
     <ClInclude Include="..\..\include\Window.h" />
     <ClInclude Include="..\..\include\WindowController.h" />
     <ClInclude Include="..\..\include\WindowPainter.h" />
+    <ClInclude Include="..\..\src\NewellTeasetData.h" />
     <ClInclude Include="..\..\src\rply.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

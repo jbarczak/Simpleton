@@ -61,6 +61,11 @@ namespace Simpleton
                           uint nRadialSplits,
                           std::vector<TessVertex>& vb,
                           std::vector<uint>& ib );
+
+    /// Produce a Utah teapot
+    void TessellateTeapot( uint nLevel,
+                           std::vector<TessVertex>& vb,
+                           std::vector<uint>& ib );
 }
 
 

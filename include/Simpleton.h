@@ -33,6 +33,7 @@
 #include "VectorMath.h"
 
 #include "Tessellate.h"
+#include "Mesh.h"
 
 #include "PoolAllocator.h"
 

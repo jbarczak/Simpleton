@@ -322,16 +322,20 @@ namespace Simpleton
  
 
 
-    bool DX11ShadowMap::Init( uint nWidth, uint nHeight, uint nMips, ID3D11Device* pDev )
+    bool DX11ShadowMap::Init( uint nWidth, uint nHeight, uint nMips, bool bD32, ID3D11Device* pDev )
     {
         if( !nMips )
             nMips = CountTextureMips( nWidth, nHeight, 1 );
+
+        DXGI_FORMAT fmt = (bD32) ? DXGI_FORMAT_R32_TYPELESS : DXGI_FORMAT_R16_TYPELESS;
+        DXGI_FORMAT zfmt = (bD32) ? DXGI_FORMAT_D32_FLOAT : DXGI_FORMAT_D16_UNORM;
+        DXGI_FORMAT srvfmt = (bD32) ? DXGI_FORMAT_R32_FLOAT : DXGI_FORMAT_R16_UNORM;
 
         D3D11_TEXTURE2D_DESC texture;
         texture.ArraySize = 1;
         texture.BindFlags = D3D11_BIND_SHADER_RESOURCE|D3D11_BIND_DEPTH_STENCIL;
         texture.CPUAccessFlags = 0;
-        texture.Format = DXGI_FORMAT_R16_TYPELESS;
+        texture.Format = fmt;
         texture.Height = nHeight;
         texture.Width = nWidth;
         texture.MipLevels = nMips;
@@ -343,12 +347,12 @@ namespace Simpleton
         D3D11_SHADER_RESOURCE_VIEW_DESC srv;
         srv.Texture2D.MipLevels = nMips;
         srv.Texture2D.MostDetailedMip = 0;
-        srv.Format = DXGI_FORMAT_R16_UNORM;
+        srv.Format = srvfmt;
         srv.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 
         D3D11_DEPTH_STENCIL_VIEW_DESC dsv;
         dsv.Flags  = 0;
-        dsv.Format = DXGI_FORMAT_D16_UNORM;
+        dsv.Format = zfmt;
         dsv.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
         dsv.Texture2D.MipSlice = 0;
 

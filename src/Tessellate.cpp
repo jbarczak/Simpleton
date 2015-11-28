@@ -4,6 +4,8 @@
 #include "Matrix.h"
 #include "Types.h"
 
+#include "NewellTeasetData.h"
+
 namespace Simpleton
 {
     namespace _INTERNAL
@@ -167,7 +169,7 @@ namespace Simpleton
         _INTERNAL::GenerateCylinderConnectivity( nRadialSegments, nAxialSegments, ib.data() );
     }
 
-
+#if 0
     float BezierBasis(float u, int i)
     {
         switch(i) 
@@ -189,6 +191,27 @@ namespace Simpleton
         case 3:  return 3*pow(u,2.0f);
         }
     }
+#endif
+
+    static void BezierBasis( float* pBasis, float* pDerivative, float u )
+    {
+        float inv_u      = 1.f-u;
+        float inv_u_sq   = inv_u*inv_u;
+        float three_u    = 3.f*u;
+        float three_u_u  = 3.f*u*u;
+        pBasis[0] = inv_u_sq*inv_u;
+        pBasis[1] = three_u*inv_u_sq;
+        pBasis[2] = three_u_u*inv_u;
+        pBasis[3] = u*u*u;
+
+        float six_u = 6.f*u;
+        float nine_u_u = 9.f*u*u;
+        pDerivative[0] = six_u - 3.f - three_u_u;
+        pDerivative[1] = 3.f   - 12.f*u + nine_u_u;
+        pDerivative[2] = six_u - nine_u_u;
+        pDerivative[3] = three_u_u;
+
+    }
 
     void TessellateBezier( uint nLevel, const Vec3f* pControlVertices, const int* pPatchIndices, 
                            std::vector<TessVertex>& rVerts, std::vector<uint>& rIndicesOut )
@@ -198,11 +221,20 @@ namespace Simpleton
         uint nVertices = 2+nLevel;
         float fDelta = 1.0f / (nVertices-1);
         float fV=0;
+
+        float BasisV[4];
+        float BasisVDeriv[4];
+        float BasisU[4];
+        float BasisUDeriv[4];
+
         for( uint i=0; i<nVertices; i++ )
         {
             float fU=0;
+            BezierBasis( BasisV, BasisVDeriv, fV );
+
             for( uint j=0; j<nVertices; j++ )
             {
+                BezierBasis( BasisU, BasisUDeriv, fU );
                 Vec3f vPos(0,0,0);
                 Vec3f vDU(0,0,0);
                 Vec3f vDV(0,0,0);
@@ -211,9 +243,9 @@ namespace Simpleton
                 {
 	                for(int j=0; j<4; j++)
                     {
-	                    vPos += pControlVertices[ pPatchIndices[ (4*j)+i ] ]*BezierBasis(fU,i)*BezierBasis(fV,j);
-	                    vDU  += pControlVertices[ pPatchIndices[ (4*j)+i ] ]*BezierBasisDeriv( fU, i ) * BezierBasis( fV, j );
-	                    vDV  += pControlVertices[ pPatchIndices[ (4*j)+i ] ]*BezierBasis( fU, i ) * BezierBasisDeriv( fV, j );
+	                    vPos += pControlVertices[ pPatchIndices[ (4*j)+i ] ]*(BasisU[i] * BasisV[j]);
+	                    vDU  += pControlVertices[ pPatchIndices[ (4*j)+i ] ]*(BasisUDeriv[i] * BasisV[j]);
+	                    vDV  += pControlVertices[ pPatchIndices[ (4*j)+i ] ]*(BasisU[i] *BasisVDeriv[j]);
                     }
                 }
             
@@ -500,6 +532,20 @@ namespace Simpleton
         _INTERNAL::GenerateCylinderConnectivity( nRadialSegments, nAxialSegments, ib.data() );
     }
 
+    void TessellateTeapot( uint nLevel, std::vector<TessVertex>& vb, std::vector<uint>& ib )
+    {
+        for( uint i=0; i<32; i++ )
+        {
+            const int* pPatch = newellTeapotPatch[i];
+            int patch[16];
+            memcpy(patch,pPatch,sizeof(int)*16);
+            for( int j=0; j<16; j++ )
+                patch[j]--; // fix indices
 
+            const Simpleton::Vec3f* pVec = (const Simpleton::Vec3f*)newellTeapotVertices;
+            Simpleton::TessellateBezier( nLevel, pVec, patch,
+                                        vb,ib );
+        }
+    }
 }
 

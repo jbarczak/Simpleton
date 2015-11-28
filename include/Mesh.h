@@ -141,6 +141,18 @@ namespace Simpleton
         }
     }
 
+    template< class TIndex >
+    inline void FlipMeshWinding( TIndex* pList, size_t nTriangles )
+    {
+        for( size_t i=0; i<nTriangles; i++ )
+        {
+            TIndex* pIB = pList + 3*i;
+            TIndex i0 = pIB[0];
+            TIndex i2 = pIB[2];
+            pIB[0] = i2;
+            pIB[2] = i0;
+        }
+    }
 }
 
 
