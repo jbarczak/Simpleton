@@ -58,7 +58,7 @@ namespace Simpleton
                 pSRVs[s][i] = m_pSRVsByName[*(pBindIndices++)];
         for( uint s=0; s<STAGE_COUNT; s++ )
             for( uint i=0; i<m_pCBCounts[s]; i++ )
-                pCBs[s][i++] = m_pConstantBuffers[*(pBindIndices++)];
+                pCBs[s][i] = m_pConstantBuffers[*(pBindIndices++)];
        
         pContext->VSSetSamplers(0, m_pSamplerCounts[STAGE_VS], pSamplers[STAGE_VS]);
         pContext->GSSetSamplers(0, m_pSamplerCounts[STAGE_GS], pSamplers[STAGE_GS]);
