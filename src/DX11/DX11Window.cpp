@@ -43,6 +43,9 @@ namespace Simpleton
         UINT nLevels = sizeof(levels)/sizeof(D3D_FEATURE_LEVEL);
 
         D3D_DRIVER_TYPE eDriverType = D3D_DRIVER_TYPE_HARDWARE;
+        if( Flags & USE_WARP )
+            eDriverType = D3D_DRIVER_TYPE_WARP;
+
         HWND hWnd = (HWND) pWin->GetHandle();
 
         IDXGISwapChain* pSwapChain=0;

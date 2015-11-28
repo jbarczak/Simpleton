@@ -32,10 +32,12 @@ namespace Simpleton
         void Bind( ID3D11DeviceContext* pDevice );
 
         const DX11ComputeResourceSchema* GetResourceSchema() const { return &m_Schema; }
-
+        
+        const UINT* GetThreadGroupDims() const { return m_Dims;}
     private:
         ComPtr<ID3D11ComputeShader> m_pShader;
         DX11ComputeResourceSchema m_Schema;
+        UINT m_Dims[3];
     };
 }
 

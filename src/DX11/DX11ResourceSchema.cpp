@@ -75,7 +75,7 @@ namespace Simpleton
         for( uint i=0; i<desc.ConstantBuffers; i++ )
         {
             D3D11_SHADER_BUFFER_DESC desc;
-            ID3D11ShaderReflectionConstantBuffer* pCB = pReflection->GetConstantBufferByIndex(0) ;
+            ID3D11ShaderReflectionConstantBuffer* pCB = pReflection->GetConstantBufferByIndex(i) ;
             pCB->GetDesc(&desc);
             
             D3D11_SHADER_INPUT_BIND_DESC bind;
@@ -524,8 +524,8 @@ namespace Simpleton
 
         pSet->m_nCBMovements     = m_CBMovements.size();
         pSet->m_nUniqueCBs       = m_CBSizes.size();
-        pSet->m_nUniqueSamplers  = nSamplerPtrs;
-        pSet->m_nUniqueTextures  = nSRVPtrs;
+        pSet->m_nUniqueSamplers  = nSamplerPtrs-1;
+        pSet->m_nUniqueTextures  = nSRVPtrs-1;
         pSet->m_pConstantsByName = m_StagingLayout.data();
         pSet->m_pCBMovements     = m_CBMovements.data();
         pSet->m_pBindIndices     = m_BindIndices.data();

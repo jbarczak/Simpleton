@@ -14,6 +14,8 @@
 
 #include "DX11/DX11ComputeKernel.h"
 
+#include <d3dcompiler.h>
+
 namespace Simpleton
 {
     bool DX11ComputeKernel::Init( const void* pCSCode, size_t nCodeSize, ID3D11Device* pDevice )
@@ -28,6 +30,15 @@ namespace Simpleton
             return false;
         }
 
+        ID3D11ShaderReflection* pRef;
+           
+        hr = D3DReflect( pCSCode, nCodeSize, __uuidof(ID3D11ShaderReflection), (void**)&pRef );
+        if( !SUCCEEDED(hr) )
+            return false;
+
+        pRef->GetThreadGroupSize( &m_Dims[0], &m_Dims[1], &m_Dims[2] );
+        pRef->Release();
+        
         return true;
     }
 

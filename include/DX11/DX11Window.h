@@ -43,6 +43,7 @@ namespace Simpleton
         {
             USE_DEBUG_LAYER=1,
             FPS_TITLE=2,
+            USE_WARP=4
         };
 
         static DX11Window* Create( unsigned int nWidth, unsigned int nHeight, unsigned int flags, DX11WindowController* pController );

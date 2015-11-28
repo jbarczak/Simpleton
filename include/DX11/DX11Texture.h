@@ -36,14 +36,17 @@ namespace Simpleton
         bool InitFromPPMFile( ID3D11Device* pDevice, const char* pFile );
         bool InitFromImage( ID3D11Device* pDevice, const PPMImage& ppm );
         bool InitFromImageWithAlpha( ID3D11Device* pDevice, const PPMImage& ppm, const PPMImage& alpha );
-        bool InitTBuffer( ID3D11Device* pDevice, DXGI_FORMAT eFormat, const void* pData, uint nElementCount );
-        ID3D11ShaderResourceView* GetSRV() const { return m_pSRV; };
+        bool InitTBuffer( ID3D11Device* pDevice, DXGI_FORMAT eFormat, const void* pData, uint nElementCount, uint BindFlags );
+        bool InitRawBuffer( ID3D11Device* pDevice, const void* pData, uint nSize, uint BindFlags );
 
+        ID3D11ShaderResourceView* GetSRV() const { return m_pSRV; };
+        ID3D11Resource* GetResource() const { return m_pTexture; }
     private:
 
         ComPtr<ID3D11ShaderResourceView> m_pSRV;
         ComPtr<ID3D11Resource> m_pTexture;
     };
+
 
     class DX11ShadowMap
     {
@@ -71,6 +74,29 @@ namespace Simpleton
         D3D11_VIEWPORT m_Viewport;
         D3D11_RECT m_Scissor;
 
+    };
+
+    class DX11RenderTexture
+    {
+    public:
+
+        bool Init( ID3D11Device* pDev, DXGI_FORMAT eFormat, uint nWidth, uint nHeight, bool bUAV );
+        ID3D11ShaderResourceView* GetSRV() const  { return m_pSRV; };
+        ID3D11RenderTargetView* GetRTV() const    { return m_pRTV; };
+        ID3D11UnorderedAccessView* GetUAV() const { return m_pUAV; };
+        ID3D11Resource* GetResource() const { return m_pTexture; }
+              
+        const D3D11_VIEWPORT& GetViewport() const { return m_Viewport; };
+        const D3D11_RECT& GetScissor() const { return m_Scissor; }
+ 
+    private:
+
+        ComPtr<ID3D11ShaderResourceView> m_pSRV;
+        ComPtr<ID3D11RenderTargetView> m_pRTV;
+        ComPtr<ID3D11UnorderedAccessView> m_pUAV;
+        ComPtr<ID3D11Resource> m_pTexture;
+        D3D11_VIEWPORT m_Viewport;
+        D3D11_RECT m_Scissor;
     };
 };
 

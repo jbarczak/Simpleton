@@ -28,4 +28,8 @@
 #include "DX11Texture.h"
 #include "DX11BufferPool.h"
 
+#include "DX11ComputeKernel.h"
+#include "DX11ComputeResourceSchema.h"
+#include "DX11ComputeResourceSet.h"
+
 #endif

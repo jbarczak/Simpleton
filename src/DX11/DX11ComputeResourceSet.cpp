@@ -30,7 +30,7 @@ namespace Simpleton
         for( uint i=0; i < m_nUniqueTextures; i++ )
             pSRVs[i] = m_pSRVsByName[*(pBindIndices++)];
         for( uint i=0; i < m_nUniqueCBs; i++ )
-            pCBs[i++] = m_pConstantBuffers[*(pBindIndices++)];
+            pCBs[i] = m_pConstantBuffers[*(pBindIndices++)];
        
         pContext->CSSetSamplers(0, m_nUniqueSamplers, pSamplers );
         pContext->CSSetShaderResources( 0, m_nUniqueTextures, pSRVs );
