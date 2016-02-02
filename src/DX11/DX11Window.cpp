@@ -111,7 +111,7 @@ namespace Simpleton
                                        D3D11_SDK_VERSION, 
                                        &sd, &pSwapChain, &pDevice, &eActualFeatureLevel, &pImmediateContext );
         if( FAILED(hr) ) // no 11.1, fallback to 11
-            D3D11CreateDeviceAndSwapChain( 0, eDriverType, 0, DeviceFlags, 
+            hr = D3D11CreateDeviceAndSwapChain( 0, eDriverType, 0, DeviceFlags, 
                                        levels+1, nLevels-1, 
                                        D3D11_SDK_VERSION, 
                                        &sd, &pSwapChain, &pDevice, &eActualFeatureLevel, &pImmediateContext );
