@@ -22,7 +22,7 @@
 #ifndef MIN
 #define MIN(x,y) (((x)<(y)) ? (x) : (y))
 #endif
-typedef unsigned int uint;
+
 
 #ifndef SWAP
 #define SWAP(x,y) { auto tmp = x; x = y; y = tmp; }
@@ -30,8 +30,7 @@ typedef unsigned int uint;
 
 namespace Simpleton
 {
-    
-    inline uint RoundUpPow2( uint n, uint p ) {  return (n + (p-1)) & ~(p-1); }
+    inline unsigned int RoundUpPow2( unsigned int  n, unsigned int p ) {  return (n + (p-1)) & ~(p-1); }
     
     inline float Radians( float degrees ) { return (3.1415926f/180.0f)*degrees; }
 

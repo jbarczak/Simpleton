@@ -43,7 +43,8 @@ namespace Simpleton
         {
             USE_DEBUG_LAYER=1,
             FPS_TITLE=2,
-            USE_WARP=4
+            USE_WARP=4,
+            NO_RESIZE=8,
         };
 
         static DX11Window* Create( unsigned int nWidth, unsigned int nHeight, unsigned int flags, DX11WindowController* pController );
@@ -57,6 +58,7 @@ namespace Simpleton
         ID3D11Device* GetDevice() { return m_pDevice; }
         ID3D11DeviceContext* GetDeviceContext() { return m_pImmediateContext; }
         ID3D11RenderTargetView* GetBackbufferRTV() const { return m_pBackbuffer; };
+        ID3D11UnorderedAccessView* GetBackbufferUAV() const { return m_pBackbufferUAV; };
         ID3D11DepthStencilView* GetBackbufferDSV() const { return m_pZBuffer; }
 
         D3D11_VIEWPORT BuildViewport();
@@ -70,7 +72,9 @@ namespace Simpleton
         float GetAspectRatio() const { return (float)m_nClientWidth/(float)m_nClientHeight; };
 
         void SetTickInterval( double fTickIntervalInSeconds ) { m_fTickInterval = fTickIntervalInSeconds; }
-        
+        void SetTimeAccumulationPaused( bool bPause ) { m_bTimePaused = bPause; }
+        bool IsTimeAccumulationPaused() const { return m_bTimePaused; }
+
     private:
 
         virtual bool WndProcHook( void* pHWND, unsigned int nMsg, intptr_t wParam, intptr_t lParam );
@@ -83,6 +87,7 @@ namespace Simpleton
         ComPtr<ID3D11DeviceContext> m_pImmediateContext;
         ComPtr<IDXGISwapChain>      m_pSwapChain;
         ComPtr<ID3D11RenderTargetView> m_pBackbuffer;
+        ComPtr<ID3D11UnorderedAccessView> m_pBackbufferUAV;
         ComPtr<ID3D11DepthStencilView> m_pZBuffer;
         ComPtr<ID3D11Texture2D> m_pBackbufferResource;
         ComPtr<ID3D11Texture2D> m_pZBufferResource;
@@ -96,6 +101,7 @@ namespace Simpleton
         UINT m_nClientWidth;
         UINT m_nClientHeight;
         UINT m_nWindowFlags;
+        bool m_bTimePaused;
 
         LARGE_INTEGER m_FPSLastTime;
         std::string m_ScreenshotPath;

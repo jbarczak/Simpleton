@@ -57,11 +57,15 @@ namespace Simpleton
         void SetCaption( const char* pWhat );
 
     protected:
-        
+        enum Flags
+        {
+            FLAG_NO_RESIZE=1
+        };
+
         virtual bool WndProcHook( void* pHWND, unsigned int nMsg, intptr_t wParam, intptr_t lParam ){return false;}
         virtual void DestroyHook() {};
 
-        bool FinishCreate( unsigned int nWidth, unsigned int nHeight );
+        bool FinishCreate( unsigned int nWidth, unsigned int nHeight, unsigned int flags );
 
         void* GetHandle() { return m_pHandle; }
         

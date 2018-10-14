@@ -15,10 +15,11 @@
 #ifndef _TEXTURE_H_
 #define _TEXTURE_H_
 
-typedef unsigned int uint;
+    typedef unsigned int uint;
 typedef char int8;
 namespace Simpleton
 {
+
     uint CountTextureMips( uint nTextureWidth, uint nTextureHeight, uint nTextureDepth );
 
     uint CountTexturePixels( uint nTextureWidth, uint nTextureHeight, uint nTextureDepth, uint nMips );

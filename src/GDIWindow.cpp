@@ -75,7 +75,7 @@ namespace Simpleton
     GDIWindow* GDIWindow::Create( unsigned int nWidth, unsigned int nHeight,  GDIWindowController* pController )
     {
         GDIWindow* pWin = new GDIWindow( pController );
-        if( pWin->FinishCreate( nWidth, nHeight ) )
+        if( pWin->FinishCreate( nWidth, nHeight, 0 ) )
             return pWin;
         delete pWin;
         return 0;

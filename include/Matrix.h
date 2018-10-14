@@ -145,7 +145,7 @@ namespace Simpleton
         static Matrix<T,SIZE> Zero()
         {
             Matrix<T,SIZE> r;
-            for( uint i=0; i<SIZE*SIZE; i++ )
+            for( unsigned int i=0; i<SIZE*SIZE; i++ )
                 r.m_values[i] = 0;
             return r;
         }

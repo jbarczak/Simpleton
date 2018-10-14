@@ -26,8 +26,9 @@ namespace Simpleton
     //=====================================================================================================================
     DX11Window* DX11Window::Create( unsigned int nWidth, unsigned int nHeight, unsigned int Flags, DX11WindowController* pController )
     {
+        bool bAllowResize = (Flags & NO_RESIZE) == 0;
         DX11Window* pWin = new DX11Window(pController);
-        if( !pWin->FinishCreate(nWidth,nHeight) )
+        if( !pWin->FinishCreate(nWidth,nHeight,bAllowResize) )
         {
             delete pWin;
             return 0;
@@ -53,6 +54,7 @@ namespace Simpleton
         ID3D11DeviceContext* pImmediateContext=0;          
         ID3D11Texture2D* pBackBuffer=0;
         ID3D11RenderTargetView* pBackBufferRTV=0;
+        ID3D11UnorderedAccessView* pBackBufferUAV=0;
         ID3D11DepthStencilView* pBackBufferDSV=0;
         ID3D11Texture2D* pZBuffer=0;
         
@@ -70,7 +72,7 @@ namespace Simpleton
         sd.BufferDesc.RefreshRate.Denominator = 1;
         sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
         sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-        sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT|DXGI_USAGE_UNORDERED_ACCESS;
         sd.Flags = 0;
         sd.OutputWindow = hWnd;
         sd.SampleDesc.Count = 1;
@@ -82,6 +84,11 @@ namespace Simpleton
         rtv.Format             = sd.BufferDesc.Format;
         rtv.Texture2D.MipSlice = 0;
         rtv.ViewDimension      = D3D11_RTV_DIMENSION_TEXTURE2D;
+
+        D3D11_UNORDERED_ACCESS_VIEW_DESC uav;
+        uav.Format             = sd.BufferDesc.Format;
+        uav.Texture2D.MipSlice = 0;
+        uav.ViewDimension      = D3D11_UAV_DIMENSION_TEXTURE2D;
 
         D3D11_TEXTURE2D_DESC zbuffer;
         zbuffer.ArraySize = 1;
@@ -126,6 +133,11 @@ namespace Simpleton
         if( FAILED(hr) )
             goto fail;
 
+        
+        hr = pDevice->CreateUnorderedAccessView( pBackBuffer, &uav, &pBackBufferUAV );
+        if( FAILED(hr) )
+            goto fail;
+
         hr = pDevice->CreateTexture2D( &zbuffer, 0, &pZBuffer );
         if( FAILED(hr) )
             goto fail;
@@ -149,6 +161,7 @@ namespace Simpleton
         pWin->m_pBackbufferResource.Owns( pBackBuffer );
         pWin->m_pZBufferResource.Owns( pZBuffer );
         pWin->m_pBackbuffer.Owns(pBackBufferRTV);
+        pWin->m_pBackbufferUAV.Owns(pBackBufferUAV);
         pWin->m_pZBuffer.Owns(pBackBufferDSV);
         pWin->m_nClientWidth  = nWidth;
         pWin->m_nClientHeight = nHeight;
@@ -159,6 +172,7 @@ namespace Simpleton
         pBackBuffer=0;
         pZBuffer=0;
         pBackBufferRTV=0;
+        pBackBufferUAV=0;
         pBackBufferDSV=0;
 
         timeBeginPeriod(1);
@@ -173,6 +187,7 @@ namespace Simpleton
         SAFE_RELEASE(pBackBuffer);
         SAFE_RELEASE(pZBuffer);
         SAFE_RELEASE(pBackBufferRTV);
+        SAFE_RELEASE(pBackBufferUAV);
         SAFE_RELEASE(pBackBufferDSV);
         SAFE_RELEASE(pSwapChain);
         SAFE_RELEASE(pImmediateContext);
@@ -210,7 +225,8 @@ namespace Simpleton
 
         m_LastTime = now;
         
-        m_fAccumulatedTime += m_fElapsedTime;
+        if( !m_bTimePaused )
+            m_fAccumulatedTime += m_fElapsedTime;
 
         DX11WindowController* pController = static_cast<DX11WindowController*>(GetController());
         pController->OnFrame( this );
@@ -289,7 +305,7 @@ namespace Simpleton
 
     //=====================================================================================================================
     //=====================================================================================================================
-    DX11Window::DX11Window( DX11WindowController* pController ) : Window(pController), m_fTickInterval(0)
+    DX11Window::DX11Window( DX11WindowController* pController ) : Window(pController), m_fTickInterval(0), m_bTimePaused(false)
     {
 
     }

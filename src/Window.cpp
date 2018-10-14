@@ -23,7 +23,15 @@
 namespace Simpleton
 {
 
-    
+    static POINT ConvertPoint( LPARAM lparam, HWND hwnd )
+    {
+        POINT pt;
+        pt.x = LOWORD(lparam);
+        pt.y = HIWORD(lparam);
+        ScreenToClient(hwnd,&pt);
+        return pt;
+    }
+
     class WindowFriends
     {
     public:
@@ -77,30 +85,30 @@ namespace Simpleton
             else if( message == WM_POINTERDOWN )
             {
                 DWORD id = GET_POINTERID_WPARAM(wParam);
-                int X = LOWORD(lParam);
-                int Y = HIWORD(lParam);
-                pController->OnTouchDown(pWin,id,X,Y);
+                POINT pt = ConvertPoint(lParam,hWnd);
+                pController->OnTouchDown(pWin,id,pt.x, pt.y);
+                return 0;
             }
             else if( message == WM_POINTERUP )
             {
                 DWORD id = GET_POINTERID_WPARAM(wParam);
-                int X = LOWORD(lParam);
-                int Y = HIWORD(lParam);
-                pController->OnTouchUp(pWin,id,X,Y);
+                POINT pt = ConvertPoint(lParam,hWnd);
+                pController->OnTouchUp(pWin,id,pt.x,pt.y);
+                return 0;
             }
             else if( message == WM_POINTERCAPTURECHANGED )
             {
                 DWORD id = GET_POINTERID_WPARAM(wParam);
-                int X = LOWORD(lParam);
-                int Y = HIWORD(lParam);
-                pController->OnTouchUp(pWin,id,X,Y);
+                POINT pt = ConvertPoint(lParam,hWnd);
+                pController->OnTouchUp(pWin,id,pt.x,pt.y);
+                return 0;
             }
             else if( message == WM_POINTERUPDATE )
             {
                 DWORD id = GET_POINTERID_WPARAM(wParam);
-                int X = LOWORD(lParam);
-                int Y = HIWORD(lParam);
-                pController->OnTouchMove(pWin,id,X,Y);
+                POINT pt = ConvertPoint(lParam,hWnd);
+                pController->OnTouchMove(pWin,id,pt.x,pt.y);
+                return 0;
             }
             else if( message == WM_LBUTTONDOWN )
             {
@@ -150,7 +158,7 @@ namespace Simpleton
         }
     };
 
-    HWND CreateWin( unsigned int nWidth, unsigned int nHeight, const char* pName, const char* pCaption, WNDPROC proc )
+    HWND CreateWin( unsigned int nWidth, unsigned int nHeight, const char* pName, const char* pCaption, WNDPROC proc, bool resize )
     {
         // register window class
         WNDCLASS wc;
@@ -167,6 +175,8 @@ namespace Simpleton
         RegisterClass(&wc);
 
         DWORD nStyle = WS_OVERLAPPEDWINDOW | WS_CAPTION | WS_SYSMENU ;
+        if( !resize )
+            nStyle = nStyle & ~(WS_MAXIMIZEBOX|WS_THICKFRAME);
 
         // make window
         HWND hWnd = CreateWindow( pName,
@@ -289,11 +299,13 @@ namespace Simpleton
     /// \param pCaption     The window caption.  If NULL, then "UNNAMED_WINDOW" is used.
     /// \param pController  A window controller which the window will pass events to.  
     //=====================================================================================================================
-    bool Window::FinishCreate( unsigned int nWidth,  unsigned int nHeight  )
+    bool Window::FinishCreate( unsigned int nWidth,  unsigned int nHeight, unsigned int flags  )
     {
         WNDPROC proc = &WindowFriends::BaseWindowProc;
+
+        bool resize = (flags & FLAG_NO_RESIZE) != 0;
         
-        HWND hWnd = CreateWin( nWidth, nHeight, "Simpleton", "Simpleton", proc );
+        HWND hWnd = CreateWin( nWidth, nHeight, "Simpleton", "Simpleton", proc, resize );
         if( !hWnd )
         {
             return false;

@@ -320,7 +320,7 @@ namespace Simpleton
         return true;
     }
  
-
+  
 
     bool DX11ShadowMap::Init( uint nWidth, uint nHeight, uint nMips, bool bD32, ID3D11Device* pDev )
     {
@@ -392,6 +392,7 @@ namespace Simpleton
         return true;
     }
 
+    
 
     bool DX11RenderTexture::Init( ID3D11Device* pDev, DXGI_FORMAT eFormat, uint nWidth, uint nHeight, bool bUAV )
     {

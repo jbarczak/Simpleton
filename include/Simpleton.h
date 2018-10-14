@@ -16,6 +16,7 @@
 #define _SIMPLETON_H_
 
 #include "Types.h"
+#include "MiscMath.h"
 #include "Rand.h"
 #include "Mutex.h"
 #include "Timer.h"
@@ -28,7 +29,7 @@
 #include "WindowController.h"
 #include "WindowPainter.h"
 #include "GDIWindow.h"
-#include "MiscMath.h"
+
 #include "MatrixStack.h"
 #include "VectorMath.h"
 

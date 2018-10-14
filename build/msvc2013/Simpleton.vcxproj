@@ -49,6 +49,7 @@
     <ClInclude Include="..\..\include\PPMImage.h" />
     <ClInclude Include="..\..\include\Rand.h" />
     <ClInclude Include="..\..\include\Simpleton.h" />
+    <ClInclude Include="..\..\include\SpinLock.h" />
     <ClInclude Include="..\..\include\Tessellate.h" />
     <ClInclude Include="..\..\include\Texture.h" />
     <ClInclude Include="..\..\include\Thread.h" />
@@ -58,6 +59,7 @@
     <ClInclude Include="..\..\include\Window.h" />
     <ClInclude Include="..\..\include\WindowController.h" />
     <ClInclude Include="..\..\include\WindowPainter.h" />
+    <ClInclude Include="..\..\include\ThreadPool.h" />
     <ClInclude Include="..\..\src\NewellTeasetData.h" />
     <ClInclude Include="..\..\src\rply.h" />
   </ItemGroup>

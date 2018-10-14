@@ -19,10 +19,12 @@
 #include "Matrix.h"
 
 #include <vector>
+
 typedef unsigned int uint;
 
 namespace Simpleton
 {
+    
     struct TessVertex
     {
         Vec3f vPos;
